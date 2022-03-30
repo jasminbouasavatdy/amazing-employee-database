@@ -2,9 +2,10 @@
 
   ## Table of contents
   1. [Description](#Description)
-  1. [Visuals](#Visuals)
   1. [Installation](#Installation)
   1. [Usage](#Usage)
+  1. [Visuals](#Visuals)
+  1. [Video](#Video)
   1. [Deployed](#Deployed)
 
 
@@ -32,10 +33,10 @@ node server.js
 
 
   ## Visuals
-![A screenshot of the terminal](./images/employeeDBTerminal.png
+![A screenshot of the terminal](./images/employeeDBTerminal.png)
 
+## Video
 
-[Click to watch a walkthrough video of the team generator](https://drive.google.com/file/d/1-JrcGGPtgIbxNnLtoo3leZs6urqkm6-I/view)
-
+[Click to watch a walkthrough video of the team generator](https://drive.google.com/file/d/1lXct7f5x9kPXduJdtOaN5go0mhGnWelT/view)
 ## Deployed
 [Click to go to my GitHub repo](https://github.com/jasminbouasavatdy/amazing-employee-database)
