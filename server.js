@@ -2,6 +2,8 @@
 const inquirer = require('inquirer');
 // require sql
 const mysql = require('mysql2');
+// require console table
+require('console.table');
 // connection to database
 const db = mysql.createConnection(
     {
@@ -25,7 +27,6 @@ const startingPrompt = () => {
                 'Add a department',
                 'Add a role',
                 'Add an employee',
-                'Update an employee role',
                 'Finish',
             ]
 
@@ -34,80 +35,60 @@ const startingPrompt = () => {
 }
 const ifChosen = (choices) => {
     if (choices.options === 'View all departments') {
-        viewDepartments()
-    } if (choices.options === 'View all roles') {
-        viewRoles()
-    } if (choices.options === 'View all employees') {
-        viewEmployees()
-    } if (choices.options === 'Add a department') {
-        addDepartment()
-    } if (choices.options === 'Add a role') {
-        addRole()
-    } if (choices.options === 'Add an employee') {
-        addEmployee()
-    } if (choices.options === 'Update an employee role') {
-        updateEmployee()
-    }if (choices.options === 'Finish'){
-        process.exit()
-    }
-    init();
+        viewDepartments();
 
+    } if (choices.options === 'View all roles') {
+        viewRoles();
+
+    } if (choices.options === 'View all employees') {
+        viewEmployees();
+
+    } if (choices.options === 'Add a department') {
+       addDepartment();
+    } if (choices.options === 'Add a role') {
+        addRole();
+
+    } if (choices.options === 'Add an employee') {
+        addEmployee();
+
+    } if (choices.options === 'Update an employee role') {
+        updateEmployee();
+
+    }if (choices.options === 'Finish'){
+        process.exit();
+    }
 };
-const viewDepartments = () => {
+// shows the formatted table when chosen
+const viewDepartments = function () {
     db.query('SELECT * FROM department', function (err, results) {
         console.table(results);
-        startingPrompt()
+        init();
     });
 }
+// shows the formatted table when chosen
 
 const viewRoles = () => {
     db.query('SELECT * FROM role', function (err, results) {
         console.table(results);
-        startingPrompt()
-
+        init()
     });
 
 }
+// shows the formatted table when chosen
 
 const viewEmployees = () => {
     db.query('SELECT * FROM employee', function (err, results) {
         console.table(results);
-        startingPrompt()
-
+        init()
     });
 
 }
-// bonus
-// const updateEmployee = (employee_id) => {
-//     db.query(
-//         `SELECT id AS value, employee_id AS name FROM employee
-//         WHERE NOT id = ?`,
-//         employee_id,(err,employee) => {
-//             inquirer.prompt({
-//                 type: 'rawlist',
-//                 message: 'Which employee did you want to update?',
-//                 name:'employee',
-//                 choices: employee
-//             }).then((answers)=> {
-//                 db.query(
-//                     'UPDATE employee SET role_id = ? WHERE id = ?',
-//                     [answers.employee,employee_id],
-//                     (err,result) => {
-//                         console.log(result);
-//                         db.query('SELECT * FROM employee', (err,employees)=>{
-//                             console.log(employees); 
-//                         })
-//                     }
-//                 )
-//             })
-//         }
-//     )
-// }
 
 const addRole = () => {
     db.query(
         `SELECT id AS value, department_name AS name FROM department`,
         (err, departments) => {
+            console.log(departments);
             inquirer.prompt(
             [
                 {
@@ -132,6 +113,7 @@ const addRole = () => {
                    [answers.title, answers.department, answers.salary],
                    (err,result)=>{
                        console.log(result);
+                       init();
                    }
                )
             })
@@ -148,17 +130,24 @@ const addDepartment = () => {
             },
         ]
     ).then((answers) => {
+        console.log(answers);
         db.query(
-            'INSERT INTO department (department_name) VALUES (?)',
-            [answers.department_name],
+            'INSERT INTO department SET ?',
+            answers,
             (err, result) => {
+                if(err){
+                    console.log(err)
+                }
                 console.log(result);
                 db.query('SELECT * FROM department', (err, departments) => {
-                    console.log(departments);
+                    if(err){
+                        console.log(err);
+                    }
+                    console.log(`${answers.department_name} added.`);
+                    init();
                 }
                 );
             });
-        startingPrompt()
     })
 };
 
@@ -214,7 +203,8 @@ const addEmployee = () => {
 
 
 function init() {
-        startingPrompt()
-        .then(ifChosen);
+    startingPrompt()
+    .then(ifChosen);
 }
+
 init();
