@@ -46,7 +46,7 @@ const ifChosen = (choices) => {
     } if (choices.options === 'Add an employee') {
         addEmployee()
     } if (choices.options === 'Update an employee role') {
-        // viewEmployees()
+        updateEmployee()
     }if (choices.options === 'Finish'){
         process.exit()
     }
@@ -77,7 +77,31 @@ const viewEmployees = () => {
     });
 
 }
-
+const updateEmployee = (employee_id) => {
+    db.query(
+        `SELECT id AS value, employee_id AS name FROM employee
+        WHERE NOT id = ?`,
+        employee_id,(err,employee) => {
+            inquirer.prompt({
+                type: 'rawlist',
+                message: 'Which employee did you want to update?',
+                name:'employee',
+                choices: employee
+            }).then((answers)=> {
+                db.query(
+                    'UPDATE employee SET role_id = ? WHERE id = ?',
+                    [answers.employee,employee_id],
+                    (err,result) => {
+                        console.log(result);
+                        db.query('SELECT * FROM employee', (err,employees)=>{
+                            console.log(employees); 
+                        })
+                    }
+                )
+            })
+        }
+    )
+}
 
 const addRole = () => {
     db.query(
